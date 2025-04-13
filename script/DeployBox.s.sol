@@ -7,13 +7,16 @@ import {ERC1967Proxy} from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.s
 
 contract DeployBox is Script{
     function run() external returns(address){
-        address proxy = deployBox()
+        address proxy = deployBox();
         return proxy;
     }
-    function DeployBox() public returns(address){
-        vm.startBroadcat();
+
+    function deployBox() public returns(address){
+        vm.startBroadcast();
         BoxV1 box = new BoxV1();
         ERC1967Proxy proxy = new ERC1967Proxy(address(box), "");
+                BoxV1(address(proxy)).initialize();
+
         vm.stopBroadcast();
         return address(proxy);
     }

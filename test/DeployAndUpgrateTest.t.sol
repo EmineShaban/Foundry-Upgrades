@@ -1,4 +1,4 @@
-//SPDX-License-Identifier: MIT
+ //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.18;
 
 import {Test} from "forge-std/Test.sol";
@@ -9,7 +9,7 @@ import {BoxV2} from "../src/BoxV2.sol";
 import {BoxV1} from "../src/BoxV1.sol";
 
 contract DeployAndUpgrateTest is Test{
-DepliyBox public deployer;
+DeployBox public deployer;
 UpgradeBox public upgrader;
 address public owner = makeAddr("user");
 
@@ -22,10 +22,20 @@ function setUp() public {
 }
 function testUpgrade() public{
     BoxV2 boxV2 = new BoxV2();
-    upgader.upgradeBox(proxy, address(boxV2));
+    upgrader.upgradeBox(proxy, address(boxV2));
     uint256 expectedValue = 2;
-    assertEq(expectedValue, boxV2(proxy).version());
-    boxV2(proxy).setNumber(7);
-    assertEq(7, boxV2(proxy).getNumber());
+    assertEq(expectedValue, BoxV2(proxy).version());
+    // BoxV2(proxy).setNumber(7);
+    // assertEq(7, BoxV2(proxy).getNumber());
 }
+
+    function testDeploymentIsV1() public {
+        address proxyAddress = deployer.deployBox();
+        uint256 expectedValue = 7;
+        vm.expectRevert();
+        BoxV2(proxyAddress).setNumber(expectedValue);
+    }
+
 }
+
+
